@@ -34,8 +34,11 @@ type AppData = {
   homeCity: string;
   homeState: string;
   homeZip: string;
+  propertyOwnership: string; // "Sole owner" | "Joint owner"
   creditScore: string;
-  ownsProperty: string; // "Yes" | "No"
+  personalIncome: string;
+  investmentHoldings: string;
+  ownsProperty: string; // "Yes" | "No"  (kept for backward compat with funnel data)
   ownershipPct: string;
 
   // Owner 2 (only if ownership < 100%)
@@ -117,7 +120,10 @@ const STATES = [
 const INITIAL: AppData = {
   name: "", email: "", phone: "", dob: "", ssn: "",
   homeStreet: "", homeCity: "", homeState: "", homeZip: "",
-  creditScore: "", ownsProperty: "", ownershipPct: "100",
+  propertyOwnership: "",
+  creditScore: "",
+  personalIncome: "", investmentHoldings: "",
+  ownsProperty: "", ownershipPct: "100",
   hasCoOwner: false,
   co2Name: "", co2OwnershipPct: "",
   co2HomeStreet: "", co2HomeCity: "", co2HomeState: "", co2HomeZip: "",
@@ -193,8 +199,10 @@ export default function ApplyPage() {
     data.homeCity.trim().length > 1 &&
     !!data.homeState &&
     data.homeZip.replace(/\D/g, "").length >= 5 &&
+    !!data.propertyOwnership &&
     !!data.creditScore &&
-    !!data.ownsProperty &&
+    data.personalIncome.trim().length > 0 &&
+    data.investmentHoldings.trim().length > 0 &&
     !!data.ownershipPct &&
     (!data.hasCoOwner ||
       (data.co2Name.trim().length > 1 &&
@@ -252,9 +260,11 @@ export default function ApplyPage() {
       if (data.homeCity.trim().length <= 1) m.push("City");
       if (!data.homeState) m.push("State");
       if (data.homeZip.replace(/\D/g, "").length < 5) m.push("ZIP");
+      if (!data.propertyOwnership) m.push("Property ownership type");
       if (!data.creditScore) m.push("Credit score");
-      if (!data.ownsProperty) m.push("Property ownership");
-      if (!data.ownershipPct) m.push("Ownership %");
+      if (data.personalIncome.trim().length === 0) m.push("Personal annual income");
+      if (data.investmentHoldings.trim().length === 0) m.push("Investment account holdings");
+      if (!data.ownershipPct) m.push("Business ownership %");
       if (data.hasCoOwner) {
         if (data.co2Name.trim().length <= 1) m.push("Co-owner name");
         if (!data.co2OwnershipPct) m.push("Co-owner ownership %");
@@ -542,13 +552,28 @@ function Step1({
           autoComplete="postal-code" />
       </Row3>
 
+      <SelectField id="propertyOwnership"
+        label="How is this property owned?"
+        value={data.propertyOwnership}
+        onChange={(v) => update("propertyOwnership", v)}
+        options={["Sole owner", "Joint owner"]} />
+
       <SelectField id="creditScore" label="Estimated credit score"
         value={data.creditScore}
         onChange={(v) => update("creditScore", v)} options={CREDIT_OPTIONS} />
-      <YesNoField id="ownsProperty"
-        label="Do you own any property?"
-        value={data.ownsProperty}
-        onChange={(v) => update("ownsProperty", v)} />
+
+      <Row>
+        <Field id="personalIncome" label="Annual personal income"
+          value={data.personalIncome}
+          onChange={(v) => update("personalIncome", v)}
+          placeholder="$150,000" inputMode="numeric"
+          hint="Your gross income (pre-tax)." />
+        <Field id="investmentHoldings" label="401(k), IRA, investment holdings"
+          value={data.investmentHoldings}
+          onChange={(v) => update("investmentHoldings", v)}
+          placeholder="$120,000" inputMode="numeric"
+          hint="Combined balance across retirement & brokerage accounts." />
+      </Row>
 
       <Field id="ownershipPct" label="Your ownership % of the business"
         value={data.ownershipPct}

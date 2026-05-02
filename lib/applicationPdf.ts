@@ -4,6 +4,7 @@ export type ApplicationData = {
   name: string; email: string; phone: string; dob: string; ssn: string;
   homeStreet: string; homeCity: string; homeState: string; homeZip: string;
   creditScore: string; ownsProperty: string; ownershipPct: string;
+  propertyOwnership?: string; personalIncome?: string; investmentHoldings?: string;
   hasCoOwner: boolean;
   co2Name: string; co2OwnershipPct: string;
   co2HomeStreet: string; co2HomeCity: string; co2HomeState: string; co2HomeZip: string;
@@ -130,8 +131,10 @@ export async function buildApplicationPdf(
       [data.homeStreet, [data.homeCity, data.homeState, data.homeZip].filter(Boolean).join(", ")]
         .filter(Boolean).join("\n") || "—",
     ],
+    ["Property ownership", dash(data.propertyOwnership)],
     ["Estimated credit score", dash(data.creditScore)],
-    ["Owns additional property", dash(data.ownsProperty)],
+    ["Annual personal income", dash(data.personalIncome)],
+    ["401(k) / IRA / investment holdings", dash(data.investmentHoldings)],
     ["Ownership % of business", data.ownershipPct ? `${data.ownershipPct}%` : "—"],
   ]);
 

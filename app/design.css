@@ -222,12 +222,6 @@ p { margin: 0; text-wrap: pretty; }
   letter-spacing: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-}
-.nav-link-btn::before {
-  content: '📕';
-  font-size: 12px;
-  filter: grayscale(0.2);
 }
 .nav-link-btn:hover { color: white; }
 
