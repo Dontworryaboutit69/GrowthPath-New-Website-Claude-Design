@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from "react";
 export default function ExitIntentEbook() {
   const [open, setOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
   const triggered = useRef(false);
 
@@ -61,12 +63,30 @@ export default function ExitIntentEbook() {
     sessionStorage.setItem("gp_ebook_dismissed", "1");
   };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.phone) return;
-    // TODO: wire backend / CRM submission here.
-    setSubmitted(true);
-    sessionStorage.setItem("gp_ebook_dismissed", "1");
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/ebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Send failed");
+      setSubmitted(true);
+      sessionStorage.setItem("gp_ebook_dismissed", "1");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? "Couldn't send the guide just now. Please try again."
+          : "Something went wrong.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!open) return null;
@@ -182,11 +202,18 @@ export default function ExitIntentEbook() {
                     autoComplete="tel"
                   />
                 </div>
+                {error && (
+                  <p className="ebook-error" role="alert">
+                    {error}
+                  </p>
+                )}
                 <button
                   type="submit"
                   className="btn btn-primary ebook-submit"
+                  disabled={submitting}
                 >
-                  Send me the guide <span className="btn-arrow">→</span>
+                  {submitting ? "Sending…" : "Send me the guide"}{" "}
+                  <span className="btn-arrow">→</span>
                 </button>
                 <p className="ebook-fine">
                   By submitting, you agree to receive the guide and occasional
