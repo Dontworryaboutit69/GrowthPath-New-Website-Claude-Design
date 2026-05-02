@@ -129,9 +129,11 @@
 .ebook-book-cover {
   position: relative;
   width: 100%; height: 100%;
-  background: linear-gradient(155deg, #1647A0 0%, #1E5BCC 50%, #0E2F6B 100%);
+  background:
+    linear-gradient(180deg, rgba(10,22,40,.45) 0%, rgba(10,22,40,.15) 35%, rgba(10,22,40,.65) 60%, rgba(10,22,40,.96) 100%),
+    url('/assets/ebook-cover.jpg') center/cover no-repeat;
   border-radius: 2px 6px 6px 2px;
-  padding: 24px 22px;
+  padding: 22px 20px;
   display: flex; flex-direction: column;
   box-shadow:
     inset 6px 0 12px -6px rgba(0,0,0,0.35),
@@ -141,64 +143,81 @@
   color: white;
   overflow: hidden;
 }
+/* Blue accent strip on left edge to match cover */
 .ebook-book-cover::before {
   content: '';
   position: absolute;
-  inset: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 1px;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: #1E5BCC;
   pointer-events: none;
+  z-index: 2;
 }
+/* "FREE GUIDE" badge top right */
 .ebook-book-cover::after {
-  content: '';
+  content: 'FREE GUIDE';
   position: absolute;
-  top: 0; bottom: 0; left: 0;
-  width: 6px;
-  background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
-  pointer-events: none;
+  top: 12px; right: 12px;
+  background: #1E5BCC;
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 4px 7px;
+  border-radius: 3px;
+  z-index: 2;
 }
 .ebook-book-mark {
   align-self: flex-start;
-  margin-bottom: 22px;
+  margin-bottom: 0;
   position: relative;
   z-index: 1;
 }
 .ebook-book-eyebrow {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.22em;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.7);
+  color: rgba(184, 205, 240, 0.95);
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-top: auto;
+  margin-bottom: 10px;
   position: relative; z-index: 1;
 }
 .ebook-book-title {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 14px;
+  letter-spacing: -0.022em;
+  line-height: 1.05;
+  margin-bottom: 10px;
   position: relative; z-index: 1;
-  text-wrap: balance;
+  color: #ffffff;
+}
+/* Serif italic accent on the last word(s) — wrap "home equity" in <em> */
+.ebook-book-title em {
+  font-family: 'Georgia', 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  color: #B8CDF0;
 }
 .ebook-book-sub {
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.5;
-  color: rgba(255,255,255,0.78);
+  color: rgba(255,255,255,0.7);
   position: relative; z-index: 1;
-  flex: 1;
+  margin-bottom: 12px;
 }
 .ebook-book-edition {
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 8px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
+  color: rgba(184, 205, 240, 0.7);
   font-weight: 700;
   position: relative; z-index: 1;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.15);
 }
 .ebook-book-shadow {
   position: absolute;

@@ -1,6 +1,12 @@
 "use client";
 
 export default function Nav({ onCta }: { onCta: () => void }) {
+  const openEbook = () => {
+    if (typeof window === "undefined") return;
+    sessionStorage.removeItem("gp_ebook_dismissed");
+    window.dispatchEvent(new CustomEvent("gp:open-ebook"));
+  };
+
   return (
     <nav className="nav">
       <div className="container nav-inner">
@@ -16,12 +22,29 @@ export default function Nav({ onCta }: { onCta: () => void }) {
           <a href="#compare">Compare</a>
           <a href="#qualify">Qualify</a>
           <a href="#faq">FAQ</a>
+          <button
+            type="button"
+            className="nav-link-btn"
+            onClick={openEbook}
+          >
+            Free Ebook
+          </button>
         </div>
-        <button className="nav-cta" onClick={onCta}>
-          <span className="nav-cta-full">See what you qualify for</span>
-          <span className="nav-cta-short">Apply</span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>→</span>
-        </button>
+        <div className="nav-actions">
+          <button
+            type="button"
+            className="nav-ebook-mobile"
+            onClick={openEbook}
+            aria-label="Free Ebook"
+          >
+            Free Ebook
+          </button>
+          <button className="nav-cta" onClick={onCta}>
+            <span className="nav-cta-full">See what you qualify for</span>
+            <span className="nav-cta-short">Apply</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>→</span>
+          </button>
+        </div>
       </div>
     </nav>
   );

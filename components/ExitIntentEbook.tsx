@@ -26,9 +26,18 @@ export default function ExitIntentEbook() {
       }
     }, 45000);
 
+    // Manual trigger from anywhere on the page (e.g., nav "Free Ebook" link)
+    const onManualOpen = () => {
+      triggered.current = true;
+      setSubmitted(false);
+      setOpen(true);
+    };
+
     document.addEventListener("mouseleave", onMouseLeave);
+    window.addEventListener("gp:open-ebook", onManualOpen);
     return () => {
       document.removeEventListener("mouseleave", onMouseLeave);
+      window.removeEventListener("gp:open-ebook", onManualOpen);
       clearTimeout(fallbackTimer);
     };
   }, []);
@@ -83,22 +92,19 @@ export default function ExitIntentEbook() {
               <div className="ebook-book">
                 <div className="ebook-book-spine" />
                 <div className="ebook-book-cover">
-                  <div className="ebook-book-mark">
-                    <img
-                      src="/assets/growthpath-logo.png"
-                      alt=""
-                      style={{ height: 18, filter: "brightness(0) invert(1)" }}
-                    />
+                  <div className="ebook-book-eyebrow">
+                    The Owner&apos;s Guide · 2026 Edition
                   </div>
-                  <div className="ebook-book-eyebrow">The Owner&apos;s Guide</div>
                   <div className="ebook-book-title">
-                    Replace Expensive Capital with Your Home Equity
+                    Replace expensive capital with your{" "}
+                    <em>home equity.</em>
                   </div>
                   <div className="ebook-book-sub">
-                    A practical breakdown of how a Business Purpose HELOC works,
-                    what it costs, and when it&apos;s the right move.
+                    A practical guide to the Business Purpose HELOC.
                   </div>
-                  <div className="ebook-book-edition">2026 Edition</div>
+                  <div className="ebook-book-edition">
+                    GrowthPath Advisory
+                  </div>
                 </div>
                 <div className="ebook-book-shadow" />
               </div>
