@@ -36,8 +36,8 @@ function userEmailHtml(name: string, downloadUrl: string): string {
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
           <td>
-            <img src="${SITE_URL}/assets/growthpath-logo.png" alt="GrowthPath Advisory"
-              height="32" style="height:32px;display:block;filter:brightness(0) invert(1);" />
+            <img src="${SITE_URL}/assets/growthpath-logo-white.png" alt="GrowthPath Advisory"
+              height="32" style="height:32px;display:block;" />
           </td>
           <td align="right" style="font-size:11px;color:#B8CDF0;letter-spacing:.14em;text-transform:uppercase;font-weight:700;">
             Owner's Guide
@@ -122,8 +122,8 @@ function userEmailHtml(name: string, downloadUrl: string): string {
 
     <!-- Navy footer -->
     <div style="background:#0A1628;padding:32px 36px;margin-top:32px;border-bottom:4px solid #1E5BCC;">
-      <img src="${SITE_URL}/assets/growthpath-logo.png" alt="GrowthPath Advisory"
-        height="22" style="height:22px;display:block;filter:brightness(0) invert(1);margin-bottom:12px;" />
+      <img src="${SITE_URL}/assets/growthpath-logo-white.png" alt="GrowthPath Advisory"
+        height="22" style="height:22px;display:block;margin-bottom:12px;" />
       <div style="font-size:12px;color:#B8CDF0;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:14px;">
         growthpathadvisory.com
       </div>
@@ -169,8 +169,8 @@ function notifyEmailHtml(name: string, email: string, phone: string, refId: stri
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
         <tr>
           <td>
-            <img src="${SITE_URL}/assets/growthpath-logo.png" alt="GrowthPath Advisory"
-              height="26" style="height:26px;display:block;filter:brightness(0) invert(1);" />
+            <img src="${SITE_URL}/assets/growthpath-logo-white.png" alt="GrowthPath Advisory"
+              height="26" style="height:26px;display:block;" />
           </td>
           <td align="right" style="font-size:10px;color:#B8CDF0;letter-spacing:.18em;text-transform:uppercase;font-weight:700;">
             New Lead Alert
