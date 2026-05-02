@@ -179,80 +179,41 @@ function notifyEmailHtml(name: string, email: string, phone: string, refId: stri
       </table>
     </div>
 
-    <!-- Lead headline -->
-    <div style="padding:32px 28px 20px;background:#ffffff;">
-      <div style="font-size:11px;color:#1E5BCC;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">
-        You got a new lead
-      </div>
-      <h1 style="margin:0 0 4px;font-size:30px;line-height:1.15;font-weight:700;color:#0F172A;letter-spacing:-.02em;">
-        ${escapeHtml(name)}
+    <!-- Headline -->
+    <div style="padding:36px 28px 8px;background:#ffffff;">
+      <h1 style="margin:0 0 8px;font-size:28px;line-height:1.2;font-weight:700;color:#0F172A;letter-spacing:-.02em;">
+        You got a new lead for the Business HELOC.
       </h1>
-      <div style="font-size:13px;color:#64748B;">
-        Just downloaded the GrowthPath Owner's Guide.
+      <div style="font-size:18px;color:#1E5BCC;font-weight:700;letter-spacing:-.012em;">
+        Call them now.
       </div>
     </div>
 
-    <!-- Contact card -->
-    <div style="padding:0 28px 8px;">
-      <div style="background:#F4F7FD;border-left:4px solid #1E5BCC;padding:20px 22px;">
+    <!-- Contact list -->
+    <div style="padding:24px 28px 8px;">
+      <div style="background:#F4F7FD;border-left:4px solid #1E5BCC;padding:22px 24px;">
 
-        <!-- Phone (most prominent, click-to-call) -->
         <div style="margin-bottom:18px;">
-          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">
-            Phone — tap to call
-          </div>
-          <a href="${tel}" style="display:inline-block;font-size:24px;font-weight:700;color:#1E5BCC;letter-spacing:-.012em;text-decoration:none;">
-            ${escapeHtml(phonePretty)}
-          </a>
+          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Name</div>
+          <div style="font-size:18px;color:#0F172A;font-weight:600;letter-spacing:-.008em;">${escapeHtml(name)}</div>
         </div>
 
-        <!-- Email -->
-        <div style="margin-bottom:6px;">
-          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">
-            Email
-          </div>
-          <a href="mailto:${escapeHtml(email)}" style="display:inline-block;font-size:16px;font-weight:600;color:#1E5BCC;text-decoration:none;letter-spacing:-.008em;">
-            ${escapeHtml(email)}
-          </a>
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Email</div>
+          <a href="mailto:${escapeHtml(email)}" style="font-size:18px;color:#1E5BCC;font-weight:600;text-decoration:none;letter-spacing:-.008em;">${escapeHtml(email)}</a>
+        </div>
+
+        <div>
+          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Phone</div>
+          <a href="${tel}" style="font-size:24px;color:#1E5BCC;font-weight:700;text-decoration:none;letter-spacing:-.012em;">${escapeHtml(phonePretty)}</a>
         </div>
 
       </div>
     </div>
 
-    <!-- Action button row -->
-    <div style="padding:18px 28px 8px;">
-      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-        <tr>
-          <td width="50%" style="padding-right:6px;">
-            <a href="${tel}"
-               style="display:block;background:#1E5BCC;color:#ffffff;text-align:center;padding:14px 18px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:.01em;">
-              Call now
-            </a>
-          </td>
-          <td width="50%" style="padding-left:6px;">
-            <a href="mailto:${escapeHtml(email)}"
-               style="display:block;background:#0A1628;color:#ffffff;text-align:center;padding:14px 18px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:.01em;">
-              Email back
-            </a>
-          </td>
-        </tr>
-      </table>
-    </div>
-
-    <!-- Meta -->
-    <div style="padding:24px 28px 0;">
-      <div style="border-top:1px solid #E5E7EB;padding-top:14px;font-size:12px;color:#64748B;line-height:1.7;">
-        <strong style="color:#0F172A;">Source:</strong> Exit-intent ebook popup<br/>
-        <strong style="color:#0F172A;">Received:</strong> ${escapeHtml(ts)} ET<br/>
-        <strong style="color:#0F172A;">Reference:</strong> ${escapeHtml(refId)}
-      </div>
-    </div>
-
-    <!-- Soft suggestion -->
-    <div style="padding:20px 28px 0;">
-      <div style="background:#FAFAF9;border:1px solid #E5E7EB;padding:14px 18px;border-radius:6px;font-size:12.5px;color:#475569;line-height:1.55;">
-        <strong style="color:#0F172A;">They've already received the ebook</strong> with a soft CTA pointing to <a href="${SITE_URL}/apply" style="color:#1E5BCC;text-decoration:none;font-weight:600;">${SITE_URL.replace("https://","")}/apply</a> — feel free to reach out and offer to walk them through their options.
-      </div>
+    <!-- Footer meta -->
+    <div style="padding:18px 28px 0;font-size:11px;color:#94A3B8;letter-spacing:.06em;">
+      Received ${escapeHtml(ts)} ET · Ref ${escapeHtml(refId)}
     </div>
 
     <!-- Navy footer -->
@@ -326,7 +287,7 @@ export async function POST(req: Request) {
           from: fromAddress,
           to: notifyRecipients,
           replyTo: email,
-          subject: `New lead: ${name} (${fmtPhone(phone)})`,
+          subject: `You got a new lead (${name})`,
           html: notifyEmailHtml(name, email, phone, refId),
         });
       } catch (err) {
