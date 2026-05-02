@@ -137,22 +137,133 @@ function userEmailHtml(name: string, downloadUrl: string): string {
 }
 
 // ============================================================
-// INTERNAL NOTIFICATION — leaner format for Sonia
+// INTERNAL LEAD ALERT — branded, action-oriented for Sonia
 // ============================================================
+function fmtPhone(raw: string): string {
+  const d = raw.replace(/\D/g, "");
+  if (d.length === 10) return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+  if (d.length === 11 && d[0] === "1") return `+1 (${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7)}`;
+  return raw;
+}
+function telHref(raw: string): string {
+  const d = raw.replace(/\D/g, "");
+  return `tel:+${d.length === 10 ? "1" + d : d}`;
+}
 function notifyEmailHtml(name: string, email: string, phone: string, refId: string): string {
-  return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0F172A;max-width:560px;">
-    <h2 style="margin:0 0 8px;font-size:17px;color:#0F172A;">New ebook download — ${escapeHtml(name)}</h2>
-    <p style="margin:0 0 16px;color:#475569;font-size:13px;">Reference: <strong>${escapeHtml(refId)}</strong></p>
-    <table style="border-collapse:collapse;font-size:13px;">
-      <tr><td style="padding:4px 14px 4px 0;color:#64748B;">Name</td><td>${escapeHtml(name)}</td></tr>
-      <tr><td style="padding:4px 14px 4px 0;color:#64748B;">Email</td><td><a href="mailto:${escapeHtml(email)}" style="color:#1E5BCC;">${escapeHtml(email)}</a></td></tr>
-      <tr><td style="padding:4px 14px 4px 0;color:#64748B;">Phone</td><td>${escapeHtml(phone)}</td></tr>
-      <tr><td style="padding:4px 14px 4px 0;color:#64748B;">Source</td><td>Exit-intent ebook popup</td></tr>
-    </table>
-    <p style="margin:18px 0 0;color:#475569;font-size:13px;">
-      They've already received the ebook with a CTA back to <a href="${SITE_URL}/apply" style="color:#1E5BCC;">${SITE_URL}/apply</a>.
-    </p>
-  </div>`;
+  const phonePretty = fmtPhone(phone);
+  const tel = telHref(phone);
+  const ts = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York", dateStyle: "medium", timeStyle: "short",
+  });
+
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>New lead — ${escapeHtml(name)}</title>
+</head>
+<body style="margin:0;padding:0;background:#FAFAF9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:560px;margin:0 auto;background:#ffffff;">
+
+    <!-- Navy header banner -->
+    <div style="background:#0A1628;padding:24px 28px;border-top:4px solid #1E5BCC;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td>
+            <img src="${SITE_URL}/assets/growthpath-logo.png" alt="GrowthPath Advisory"
+              height="26" style="height:26px;display:block;filter:brightness(0) invert(1);" />
+          </td>
+          <td align="right" style="font-size:10px;color:#B8CDF0;letter-spacing:.18em;text-transform:uppercase;font-weight:700;">
+            New Lead Alert
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Lead headline -->
+    <div style="padding:32px 28px 20px;background:#ffffff;">
+      <div style="font-size:11px;color:#1E5BCC;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">
+        You got a new lead
+      </div>
+      <h1 style="margin:0 0 4px;font-size:30px;line-height:1.15;font-weight:700;color:#0F172A;letter-spacing:-.02em;">
+        ${escapeHtml(name)}
+      </h1>
+      <div style="font-size:13px;color:#64748B;">
+        Just downloaded the GrowthPath Owner's Guide.
+      </div>
+    </div>
+
+    <!-- Contact card -->
+    <div style="padding:0 28px 8px;">
+      <div style="background:#F4F7FD;border-left:4px solid #1E5BCC;padding:20px 22px;">
+
+        <!-- Phone (most prominent, click-to-call) -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">
+            Phone — tap to call
+          </div>
+          <a href="${tel}" style="display:inline-block;font-size:24px;font-weight:700;color:#1E5BCC;letter-spacing:-.012em;text-decoration:none;">
+            ${escapeHtml(phonePretty)}
+          </a>
+        </div>
+
+        <!-- Email -->
+        <div style="margin-bottom:6px;">
+          <div style="font-size:10px;color:#0E2F6B;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">
+            Email
+          </div>
+          <a href="mailto:${escapeHtml(email)}" style="display:inline-block;font-size:16px;font-weight:600;color:#1E5BCC;text-decoration:none;letter-spacing:-.008em;">
+            ${escapeHtml(email)}
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Action button row -->
+    <div style="padding:18px 28px 8px;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td width="50%" style="padding-right:6px;">
+            <a href="${tel}"
+               style="display:block;background:#1E5BCC;color:#ffffff;text-align:center;padding:14px 18px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:.01em;">
+              Call now
+            </a>
+          </td>
+          <td width="50%" style="padding-left:6px;">
+            <a href="mailto:${escapeHtml(email)}"
+               style="display:block;background:#0A1628;color:#ffffff;text-align:center;padding:14px 18px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:.01em;">
+              Email back
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Meta -->
+    <div style="padding:24px 28px 0;">
+      <div style="border-top:1px solid #E5E7EB;padding-top:14px;font-size:12px;color:#64748B;line-height:1.7;">
+        <strong style="color:#0F172A;">Source:</strong> Exit-intent ebook popup<br/>
+        <strong style="color:#0F172A;">Received:</strong> ${escapeHtml(ts)} ET<br/>
+        <strong style="color:#0F172A;">Reference:</strong> ${escapeHtml(refId)}
+      </div>
+    </div>
+
+    <!-- Soft suggestion -->
+    <div style="padding:20px 28px 0;">
+      <div style="background:#FAFAF9;border:1px solid #E5E7EB;padding:14px 18px;border-radius:6px;font-size:12.5px;color:#475569;line-height:1.55;">
+        <strong style="color:#0F172A;">They've already received the ebook</strong> with a soft CTA pointing to <a href="${SITE_URL}/apply" style="color:#1E5BCC;text-decoration:none;font-weight:600;">${SITE_URL.replace("https://","")}/apply</a> — feel free to reach out and offer to walk them through their options.
+      </div>
+    </div>
+
+    <!-- Navy footer -->
+    <div style="background:#0A1628;padding:20px 28px;margin-top:24px;border-bottom:4px solid #1E5BCC;">
+      <div style="font-size:10px;color:#B8CDF0;letter-spacing:.18em;text-transform:uppercase;font-weight:600;">
+        GrowthPath Advisory  ·  growthpathadvisory.com
+      </div>
+    </div>
+
+  </div>
+</body></html>`;
 }
 
 // ============================================================
@@ -215,7 +326,7 @@ export async function POST(req: Request) {
           from: fromAddress,
           to: notifyRecipients,
           replyTo: email,
-          subject: `New ebook download — ${name}`,
+          subject: `New lead: ${name} (${fmtPhone(phone)})`,
           html: notifyEmailHtml(name, email, phone, refId),
         });
       } catch (err) {
