@@ -11,20 +11,57 @@ const fmtK = (n: number) => {
 type Answers = {
   amount: number;
   useCase: string | null;
+  ownsProperty: string | null;
   equity: string | null;
   credit: string | null;
+  state: string;
   name: string;
   email: string;
   phone: string;
 };
+
+const UNSUPPORTED_STATES = new Set([
+  "AZ","GA","HI","ID","MI","MN","NV","NJ","ND","OR","SD","UT","VT","VA","WV",
+]);
+
+const ALL_STATES: { code: string; name: string }[] = [
+  { code: "AL", name: "Alabama" }, { code: "AK", name: "Alaska" },
+  { code: "AZ", name: "Arizona" }, { code: "AR", name: "Arkansas" },
+  { code: "CA", name: "California" }, { code: "CO", name: "Colorado" },
+  { code: "CT", name: "Connecticut" }, { code: "DE", name: "Delaware" },
+  { code: "DC", name: "District of Columbia" }, { code: "FL", name: "Florida" },
+  { code: "GA", name: "Georgia" }, { code: "HI", name: "Hawaii" },
+  { code: "ID", name: "Idaho" }, { code: "IL", name: "Illinois" },
+  { code: "IN", name: "Indiana" }, { code: "IA", name: "Iowa" },
+  { code: "KS", name: "Kansas" }, { code: "KY", name: "Kentucky" },
+  { code: "LA", name: "Louisiana" }, { code: "ME", name: "Maine" },
+  { code: "MD", name: "Maryland" }, { code: "MA", name: "Massachusetts" },
+  { code: "MI", name: "Michigan" }, { code: "MN", name: "Minnesota" },
+  { code: "MS", name: "Mississippi" }, { code: "MO", name: "Missouri" },
+  { code: "MT", name: "Montana" }, { code: "NE", name: "Nebraska" },
+  { code: "NV", name: "Nevada" }, { code: "NH", name: "New Hampshire" },
+  { code: "NJ", name: "New Jersey" }, { code: "NM", name: "New Mexico" },
+  { code: "NY", name: "New York" }, { code: "NC", name: "North Carolina" },
+  { code: "ND", name: "North Dakota" }, { code: "OH", name: "Ohio" },
+  { code: "OK", name: "Oklahoma" }, { code: "OR", name: "Oregon" },
+  { code: "PA", name: "Pennsylvania" }, { code: "RI", name: "Rhode Island" },
+  { code: "SC", name: "South Carolina" }, { code: "SD", name: "South Dakota" },
+  { code: "TN", name: "Tennessee" }, { code: "TX", name: "Texas" },
+  { code: "UT", name: "Utah" }, { code: "VT", name: "Vermont" },
+  { code: "VA", name: "Virginia" }, { code: "WA", name: "Washington" },
+  { code: "WV", name: "West Virginia" }, { code: "WI", name: "Wisconsin" },
+  { code: "WY", name: "Wyoming" },
+];
 
 export default function QualifierFunnel() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
     amount: 150,
     useCase: null,
+    ownsProperty: null,
     equity: null,
     credit: null,
+    state: "",
     name: "",
     email: "",
     phone: "",
@@ -33,28 +70,49 @@ export default function QualifierFunnel() {
   const steps = [
     { id: "amount", label: "Capital needed" },
     { id: "useCase", label: "Use of funds" },
+    { id: "ownsProperty", label: "Property ownership" },
     { id: "equity", label: "Home equity" },
     { id: "credit", label: "Credit range" },
+    { id: "state", label: "Your state" },
     { id: "contact", label: "Your details" },
     { id: "result", label: "Pre-qualification" },
   ];
   const total = steps.length;
-  const pct = Math.round((step / (total - 1)) * 100);
+  const noProperty = answers.ownsProperty === "no";
+  // Skip the equity step (index 3) when user doesn't own a home.
+  const visibleTotal = noProperty ? total - 1 : total;
+  const visibleStepNumber = noProperty && step > 3 ? step : step + 1;
+  const pct = Math.round((visibleStepNumber / visibleTotal) * 100);
 
-  const next = () => setStep((s) => Math.min(s + 1, total - 1));
-  const prev = () => setStep((s) => Math.max(s - 1, 0));
+  const advance = (direction: 1 | -1) => {
+    setStep((s) => {
+      let target = s + direction;
+      // Skip equity step (index 3) when user doesn't own property
+      if (target === 3 && noProperty) target += direction;
+      return Math.max(0, Math.min(target, total - 1));
+    });
+  };
+  const next = () => advance(1);
+  const prev = () => advance(-1);
   const reset = () => {
     setStep(0);
     setAnswers({
       amount: 150,
       useCase: null,
+      ownsProperty: null,
       equity: null,
       credit: null,
+      state: "",
       name: "",
       email: "",
       phone: "",
     });
   };
+
+  const stateUnsupported =
+    !!answers.state && UNSUPPORTED_STATES.has(answers.state);
+  const stateName =
+    ALL_STATES.find((s) => s.code === answers.state)?.name || answers.state;
 
   const contactValid =
     answers.name.trim().length > 1 &&
@@ -84,7 +142,7 @@ export default function QualifierFunnel() {
       <div className="funnel-head">
         <div className="funnel-head-left">
           <span className="funnel-step">
-            Step {Math.min(step + 1, total)} of {total}
+            Step {Math.min(visibleStepNumber, visibleTotal)} of {visibleTotal}
           </span>
           <span className="funnel-title">{steps[step].label}</span>
         </div>
@@ -200,6 +258,42 @@ export default function QualifierFunnel() {
         {step === 2 && (
           <div className="fbody">
             <div className="fbody-q">
+              Do you <span className="it">own a home</span> with equity?
+            </div>
+            <p className="fbody-contact-lede">
+              This program is a HELOC against your home, so home ownership is
+              required. If you don&apos;t own a home, we&apos;ll have an advisor
+              reach out about other funding options.
+            </p>
+            <div className="fbody-options grid-2">
+              {[
+                { id: "yes", label: "Yes, I own a home" },
+                { id: "no", label: "No, I don't" },
+              ].map((o) => (
+                <button
+                  key={o.id}
+                  className={
+                    "opt opt-tight" +
+                    (answers.ownsProperty === o.id ? " is-active" : "")
+                  }
+                  onClick={() => {
+                    setAnswers({ ...answers, ownsProperty: o.id });
+                    setTimeout(() => {
+                      // If "no", skip equity (step 3) → jump straight to credit (step 4)
+                      setStep(o.id === "no" ? 4 : 3);
+                    }, 200);
+                  }}
+                >
+                  <span className="opt-label">{o.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="fbody">
+            <div className="fbody-q">
               How much <span className="it">equity</span> is in your home?
             </div>
             <div className="fbody-options grid-2">
@@ -228,7 +322,7 @@ export default function QualifierFunnel() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <div className="fbody">
             <div className="fbody-q">What&apos;s your approximate credit score?</div>
             <div className="fbody-options grid-2">
@@ -258,7 +352,36 @@ export default function QualifierFunnel() {
           </div>
         )}
 
-        {step === 4 && (
+        {step === 5 && (
+          <div className="fbody">
+            <div className="fbody-q">
+              What <span className="it">state</span> is your home in?
+            </div>
+            <p className="fbody-contact-lede">
+              The collateral property you&apos;d use for the HELOC.
+            </p>
+            <div className="fbody-field">
+              <label htmlFor="qf-state">State</label>
+              <select
+                id="qf-state"
+                className="fbody-select"
+                value={answers.state}
+                onChange={(e) =>
+                  setAnswers({ ...answers, state: e.target.value })
+                }
+              >
+                <option value="">Select your state…</option>
+                {ALL_STATES.map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {step === 6 && (
           <div className="fbody">
             <div className="fbody-q">
               Where should we send your{" "}
@@ -319,7 +442,30 @@ export default function QualifierFunnel() {
           </div>
         )}
 
-        {step === 5 && (
+        {step === 7 && noProperty && (
+          <div className="fbody fbody-result">
+            <div className="result-stamp result-stamp-warn">
+              <span className="result-stamp-dot" />
+              Different program needed
+            </div>
+            <div className="fbody-q result-q">
+              {answers.name ? `${answers.name.split(" ")[0]}, ` : ""}
+              this HELOC requires home ownership — but{" "}
+              <span className="result-amt">we&apos;ve got options</span>.
+            </div>
+            <div className="result-subline">
+              We have multiple funding programs — MCAs, term loans, equipment
+              financing, lines of credit — that don&apos;t require real estate
+              collateral. A GrowthPath advisor will reach out within 24 hours
+              to walk you through what&apos;s available for your situation.
+            </div>
+            <button className="funnel-restart" onClick={reset}>
+              Start over
+            </button>
+          </div>
+        )}
+
+        {step === 7 && !noProperty && !stateUnsupported && (
           <div className="fbody fbody-result">
             <div className="result-stamp">
               <span className="result-stamp-dot" />
@@ -366,6 +512,30 @@ export default function QualifierFunnel() {
             </button>
           </div>
         )}
+
+        {step === 7 && !noProperty && stateUnsupported && (
+          <div className="fbody fbody-result">
+            <div className="result-stamp result-stamp-warn">
+              <span className="result-stamp-dot" />
+              Different program needed
+            </div>
+            <div className="fbody-q result-q">
+              {answers.name ? `${answers.name.split(" ")[0]}, ` : ""}
+              this specific HELOC isn&apos;t available in{" "}
+              <span className="result-amt">{stateName}</span>
+              {" "}— but don&apos;t worry.
+            </div>
+            <div className="result-subline">
+              We have multiple funding options across MCAs, term loans, and
+              other programs that can fit your needs. An advisor will reach out
+              within one business day to walk through what&apos;s available for
+              your situation.
+            </div>
+            <button className="funnel-restart" onClick={reset}>
+              Start over
+            </button>
+          </div>
+        )}
       </div>
 
       {step < total - 1 && (
@@ -381,7 +551,15 @@ export default function QualifierFunnel() {
             <button className="btn btn-primary funnel-next" onClick={next}>
               Continue <span className="btn-arrow">→</span>
             </button>
-          ) : step === 4 ? (
+          ) : step === 5 ? (
+            <button
+              className="btn btn-primary funnel-next"
+              onClick={next}
+              disabled={!answers.state}
+            >
+              Continue <span className="btn-arrow">→</span>
+            </button>
+          ) : step === 6 ? (
             <button
               className="btn btn-primary funnel-next"
               onClick={next}

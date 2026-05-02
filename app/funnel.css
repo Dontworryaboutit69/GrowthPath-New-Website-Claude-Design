@@ -371,3 +371,67 @@
   transform: none;
 }
 .funnel-next:disabled:hover { background: var(--gp-mute); border-color: var(--gp-mute); }
+
+.fbody-select {
+  font-family: inherit;
+  font-size: 14.5px;
+  color: var(--gp-ink);
+  background: white;
+  border: 1px solid var(--gp-line);
+  border-radius: 8px;
+  padding: 11px 13px;
+  outline: none;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gp-slate) 50%),
+                    linear-gradient(135deg, var(--gp-slate) 50%, transparent 50%);
+  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+.fbody-select:focus {
+  border-color: var(--gp-blue);
+  box-shadow: 0 0 0 3px rgba(30, 91, 204, 0.12);
+}
+
+.result-stamp-warn {
+  background: var(--gp-warn-tint);
+  color: var(--gp-warn);
+}
+.result-stamp-warn .result-stamp-dot { background: var(--gp-warn); }
+
+/* ============================================
+   FUNNEL — MOBILE COMPACT (≤ 760px)
+   ============================================ */
+@media (max-width: 760px) {
+  .funnel-head { padding: 18px 20px 10px; }
+  .funnel-step { font-size: 10px; }
+  .funnel-title { font-size: 16px; }
+  .funnel-tag { font-size: 9px; padding: 5px 8px; }
+  .funnel-progress { margin: 0 20px; }
+
+  .funnel-body { min-height: 240px; padding: 20px 20px 6px; }
+  .fbody-q { font-size: 19px; margin-bottom: 16px; }
+
+  .fbody-amount-display { margin-bottom: 10px; }
+  .amt-big { font-size: 36px; }
+  .hero-card-slider { margin: 6px 0 12px; }
+  .fbody-presets { gap: 5px; margin-top: 14px; }
+  .preset { padding: 8px 9px; font-size: 11px; }
+
+  .fbody-options { gap: 6px; }
+  .opt { padding: 12px 14px; }
+  .opt-tight { padding: 11px 14px; }
+  .opt-label { font-size: 14px; }
+  .opt-sub { font-size: 12px; }
+
+  .funnel-foot { padding: 14px 20px 16px; }
+
+  .fbody-result .result-q { font-size: 19px; margin-bottom: 10px; }
+  .fbody-result .result-subline { font-size: 13.5px; margin-bottom: 18px; }
+  .result-grid { margin-bottom: 16px; }
+  .result-cell { padding: 12px 14px; }
+  .rc-val { font-size: 18px; }
+  .funnel-cta { padding: 13px; font-size: 14px; }
+}

@@ -9,9 +9,17 @@ import { Fragment } from "react";
 
 export default function Home() {
   const scrollToHero = () => {
-    document
-      .getElementById("hero")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const isMobile =
+      typeof window !== "undefined" && window.innerWidth <= 1080;
+    if (isMobile) {
+      document
+        .getElementById("qualifier")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      document
+        .getElementById("hero")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -81,7 +89,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="hero-funnel-wrap">
+          <div id="qualifier" className="hero-funnel-wrap">
             <QualifierFunnel />
           </div>
 
@@ -164,6 +172,23 @@ export default function Home() {
             </div>
           </div>
           <ComparisonTable />
+
+          <div className="section-cta">
+            <p>
+              The math is the math. See what your equity actually qualifies
+              for.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={scrollToHero}
+            >
+              See what you qualify for <span className="btn-arrow">→</span>
+            </button>
+            <span className="section-cta-fine">
+              Soft credit check · No impact to your score · ~5 minutes
+            </span>
+          </div>
         </div>
       </section>
 
@@ -221,6 +246,17 @@ export default function Home() {
                 <p>{s.d}</p>
               </div>
             ))}
+          </div>
+
+          <div className="section-cta">
+            <p>From application to funded in 5 days. Start yours now.</p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={scrollToHero}
+            >
+              Start my application <span className="btn-arrow">→</span>
+            </button>
           </div>
         </div>
       </section>
@@ -347,6 +383,17 @@ export default function Home() {
             ))}
           </div>
         </div>
+
+        <div className="section-cta section-cta-onblue">
+          <p>If that&apos;s you, the rest takes 5 minutes.</p>
+          <button
+            type="button"
+            className="btn btn-ghost-light"
+            onClick={scrollToHero}
+          >
+            Check my eligibility <span className="btn-arrow">→</span>
+          </button>
+        </div>
       </section>
 
       {/* FINE PRINT */}
@@ -437,26 +484,27 @@ export default function Home() {
             <div>
               <div className="h">State availability</div>
               <div className="t">
-                Available in most US states. Variable-rate loans not currently
+                Available in most US states. This program is not currently
                 offered in:
               </div>
             </div>
             <div className="pills">
               {[
-                "CO",
-                "DC",
-                "IL",
-                "MA",
-                "MS",
-                "NY",
-                "OK",
-                "SC",
-                "TX",
-                "VA",
+                "AZ",
+                "GA",
+                "HI",
+                "ID",
+                "MI",
+                "MN",
+                "NV",
+                "NJ",
+                "ND",
+                "OR",
+                "SD",
+                "UT",
                 "VT",
-                "WI",
+                "VA",
                 "WV",
-                "WY",
               ].map((s) => (
                 <span key={s} className="pill">
                   {s}
