@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 
 const fmtK = (n: number) => {
   if (n >= 1000)
@@ -55,6 +55,7 @@ const ALL_STATES: { code: string; name: string }[] = [
 
 export default function QualifierFunnel() {
   const [step, setStep] = useState(0);
+  const submittedPrequalRef = useRef(false);
   const [answers, setAnswers] = useState<Answers>({
     amount: 150,
     useCase: null,
@@ -66,6 +67,20 @@ export default function QualifierFunnel() {
     email: "",
     phone: "",
   });
+
+  const submitPrequalLead = (data: Answers) => {
+    if (submittedPrequalRef.current) return;
+    submittedPrequalRef.current = true;
+    fetch("/api/prequal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      keepalive: true,
+    }).catch((err) => {
+      console.error("[prequal] send failed:", err);
+      submittedPrequalRef.current = false;
+    });
+  };
 
   const steps = [
     { id: "amount", label: "Capital needed" },
@@ -96,6 +111,7 @@ export default function QualifierFunnel() {
   const prev = () => advance(-1);
   const reset = () => {
     setStep(0);
+    submittedPrequalRef.current = false;
     setAnswers({
       amount: 150,
       useCase: null,
@@ -562,7 +578,10 @@ export default function QualifierFunnel() {
           ) : step === 6 ? (
             <button
               className="btn btn-primary funnel-next"
-              onClick={next}
+              onClick={() => {
+                submitPrequalLead(answers);
+                next();
+              }}
               disabled={!contactValid}
             >
               See my pre-qualification <span className="btn-arrow">→</span>
