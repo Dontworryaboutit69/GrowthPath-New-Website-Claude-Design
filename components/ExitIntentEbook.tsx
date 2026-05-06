@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { fbqTrack } from "@/lib/fbpixel";
 
 export default function ExitIntentEbook() {
   const [open, setOpen] = useState(false);
@@ -76,6 +77,10 @@ export default function ExitIntentEbook() {
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean };
       if (!res.ok || !data.ok) throw new Error("Send failed");
+      fbqTrack("Lead", {
+        content_name: "Free Owner's Guide ebook",
+        content_category: "ebook",
+      });
       setSubmitted(true);
       sessionStorage.setItem("gp_ebook_dismissed", "1");
     } catch (err) {

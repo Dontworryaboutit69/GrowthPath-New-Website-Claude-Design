@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties } from "react";
+import { fbqTrack } from "@/lib/fbpixel";
 
 const fmtK = (n: number) => {
   if (n >= 1000)
@@ -71,6 +72,12 @@ export default function QualifierFunnel() {
   const submitPrequalLead = (data: Answers) => {
     if (submittedPrequalRef.current) return;
     submittedPrequalRef.current = true;
+    fbqTrack("Lead", {
+      content_name: "HELOC pre-qualification",
+      content_category: "funnel",
+      value: data.amount,
+      currency: "USD",
+    });
     fetch("/api/prequal", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -79,6 +86,18 @@ export default function QualifierFunnel() {
     }).catch((err) => {
       console.error("[prequal] send failed:", err);
       submittedPrequalRef.current = false;
+    });
+  };
+
+  const initiatedRef = useRef(false);
+  const trackInitiate = () => {
+    if (initiatedRef.current) return;
+    initiatedRef.current = true;
+    fbqTrack("InitiateCheckout", {
+      content_name: "HELOC pre-qualification",
+      content_category: "funnel",
+      value: answers.amount,
+      currency: "USD",
     });
   };
 
@@ -564,7 +583,13 @@ export default function QualifierFunnel() {
             ← Back
           </button>
           {step === 0 ? (
-            <button className="btn btn-primary funnel-next" onClick={next}>
+            <button
+              className="btn btn-primary funnel-next"
+              onClick={() => {
+                trackInitiate();
+                next();
+              }}
+            >
               Continue <span className="btn-arrow">→</span>
             </button>
           ) : step === 5 ? (

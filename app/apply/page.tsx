@@ -2,6 +2,7 @@
 
 import "./apply.css";
 import { useEffect, useState, type CSSProperties } from "react";
+import { fbqTrack } from "@/lib/fbpixel";
 
 type Prequal = {
   amount?: number;
@@ -320,6 +321,13 @@ export default function ApplyPage() {
         body: JSON.stringify({ ...data, prequal }),
       });
       if (!res.ok) throw new Error("Submission failed");
+      fbqTrack("CompleteRegistration", {
+        content_name: "HELOC application",
+        content_category: "application",
+        value: prequal?.amount,
+        currency: "USD",
+        status: "submitted",
+      });
       sessionStorage.removeItem("gp_prequal");
       try {
         const first = (data.name || "").trim().split(/\s+/)[0] || "";
