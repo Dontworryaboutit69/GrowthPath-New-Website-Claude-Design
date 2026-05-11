@@ -4,9 +4,12 @@ import Nav from "@/components/Nav";
 import ComparisonTable from "@/components/ComparisonTable";
 import FAQ from "@/components/FAQ";
 import ExitIntentEbook from "@/components/ExitIntentEbook";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo(0, 0);
+  }, []);
   return (
     <div data-screen-label="Landing Page">
       <Nav />
