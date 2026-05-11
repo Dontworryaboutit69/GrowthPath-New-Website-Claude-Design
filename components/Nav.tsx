@@ -1,6 +1,6 @@
 "use client";
 
-export default function Nav({ onCta }: { onCta: () => void }) {
+export default function Nav() {
   const openEbook = () => {
     if (typeof window === "undefined") return;
     sessionStorage.removeItem("gp_ebook_dismissed");
@@ -10,7 +10,7 @@ export default function Nav({ onCta }: { onCta: () => void }) {
   return (
     <nav className="nav">
       <div className="container nav-inner">
-        <a href="#" className="nav-logo">
+        <a href="/" className="nav-logo">
           <img
             src="/assets/growthpath-logo.png"
             alt="GrowthPath Advisory"
@@ -39,11 +39,11 @@ export default function Nav({ onCta }: { onCta: () => void }) {
           >
             Free Ebook
           </button>
-          <button className="nav-cta" onClick={onCta}>
+          <a className="nav-cta" href="/qualify">
             <span className="nav-cta-full">See what you qualify for</span>
             <span className="nav-cta-short">Apply</span>
             <span style={{ fontFamily: "var(--font-mono)", fontSize: 11 }}>→</span>
-          </button>
+          </a>
         </div>
       </div>
     </nav>

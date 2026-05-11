@@ -1,30 +1,15 @@
 "use client";
 
 import Nav from "@/components/Nav";
-import QualifierFunnel from "@/components/QualifierFunnel";
 import ComparisonTable from "@/components/ComparisonTable";
 import FAQ from "@/components/FAQ";
 import ExitIntentEbook from "@/components/ExitIntentEbook";
 import { Fragment } from "react";
 
 export default function Home() {
-  const scrollToHero = () => {
-    const isMobile =
-      typeof window !== "undefined" && window.innerWidth <= 1080;
-    if (isMobile) {
-      document
-        .getElementById("qualifier")
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-    } else {
-      document
-        .getElementById("hero")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   return (
     <div data-screen-label="Landing Page">
-      <Nav onCta={scrollToHero} />
+      <Nav />
 
       {/* HERO */}
       <section id="hero" className="hero" data-screen-label="Hero">
@@ -51,17 +36,14 @@ export default function Home() {
 
           <div className="hero-buttons">
             <div className="hero-cta-row">
-              <button className="btn btn-primary" onClick={scrollToHero}>
+              <a href="/qualify" className="btn btn-primary">
                 See what you qualify for{" "}
                 <span className="btn-arrow">→</span>
-              </button>
-              <a href="#compare" className="btn btn-ghost-light">
-                Compare your current funding
               </a>
             </div>
             <p className="hero-micro">
               <span className="check">✓</span>
-              Soft credit check &nbsp;·&nbsp; No impact to score &nbsp;·&nbsp; ~5
+              Soft credit check &nbsp;·&nbsp; No impact to score &nbsp;·&nbsp; ~2
               minutes
             </p>
           </div>
@@ -89,8 +71,16 @@ export default function Home() {
             </div>
           </div>
 
-          <div id="qualifier" className="hero-funnel-wrap">
-            <QualifierFunnel />
+          <div className="hero-cta-mobile">
+            <a href="/qualify" className="btn btn-primary">
+              See what you qualify for{" "}
+              <span className="btn-arrow">→</span>
+            </a>
+            <p className="hero-micro">
+              <span className="check">✓</span>
+              Soft credit check &nbsp;·&nbsp; No impact to score &nbsp;·&nbsp; ~2
+              minutes
+            </p>
           </div>
 
           <div className="hero-trust">
@@ -178,15 +168,11 @@ export default function Home() {
               The math is the math. See what your equity actually qualifies
               for.
             </p>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={scrollToHero}
-            >
+            <a href="/qualify" className="btn btn-primary">
               See what you qualify for <span className="btn-arrow">→</span>
-            </button>
+            </a>
             <span className="section-cta-fine">
-              Soft credit check · No impact to your score · ~5 minutes
+              Soft credit check · No impact to your score · ~2 minutes
             </span>
           </div>
         </div>
@@ -250,13 +236,9 @@ export default function Home() {
 
           <div className="section-cta">
             <p>From application to funded in 5 days. Start yours now.</p>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={scrollToHero}
-            >
+            <a href="/qualify" className="btn btn-primary">
               Start my application <span className="btn-arrow">→</span>
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -385,14 +367,10 @@ export default function Home() {
         </div>
 
         <div className="section-cta section-cta-onblue">
-          <p>If that&apos;s you, the rest takes 5 minutes.</p>
-          <button
-            type="button"
-            className="btn btn-ghost-light"
-            onClick={scrollToHero}
-          >
+          <p>If that&apos;s you, the rest takes 2 minutes.</p>
+          <a href="/qualify" className="btn btn-ghost-light">
             Check my eligibility <span className="btn-arrow">→</span>
-          </button>
+          </a>
         </div>
       </section>
 
@@ -553,11 +531,8 @@ export default function Home() {
             just haven&apos;t unlocked it yet.
           </p>
           <div className="final-cta-row">
-            <button className="btn btn-primary" onClick={scrollToHero}>
+            <a href="/qualify" className="btn btn-primary">
               Check your rate now <span className="btn-arrow">→</span>
-            </button>
-            <a href="#compare" className="btn btn-ghost-light">
-              Compare to your current funding
             </a>
           </div>
           <p className="final-micro">
