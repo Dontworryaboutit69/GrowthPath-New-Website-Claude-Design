@@ -51,10 +51,10 @@ type Fonts = {
   courier: PDFFont; courierBold: PDFFont; sigItalic: PDFFont;
 };
 
-const fmtSsnMasked = (v: string) => {
+const fmtSsn = (v: string) => {
   const digits = (v || "").replace(/\D/g, "");
   if (digits.length !== 9) return v || "—";
-  return `XXX-XX-${digits.slice(-4)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
 };
 const fmtDate = (iso: string) => {
   if (!iso) return "—";
@@ -125,7 +125,7 @@ export async function buildApplicationPdf(
     ["Email", dash(data.email)],
     ["Cell phone", dash(data.phone)],
     ["Date of birth", fmtDate(data.dob)],
-    ["Social Security #", fmtSsnMasked(data.ssn)],
+    ["Social Security #", fmtSsn(data.ssn)],
     [
       "Home address (collateral)",
       [data.homeStreet, [data.homeCity, data.homeState, data.homeZip].filter(Boolean).join(", ")]
@@ -150,7 +150,7 @@ export async function buildApplicationPdf(
           .filter(Boolean).join("\n") || "—",
       ],
       ["Date of birth", fmtDate(data.co2Dob)],
-      ["Social Security #", fmtSsnMasked(data.co2Ssn)],
+      ["Social Security #", fmtSsn(data.co2Ssn)],
       ["Cell phone", dash(data.co2Phone)],
       ["Email", dash(data.co2Email)],
       ["Estimated credit score", dash(data.co2CreditScore)],
